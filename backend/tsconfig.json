@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist", //es donde se va a compilar el proyecto
+        "rootDir": "./src",//carpeta principal donde va a encontrar nuestro codigo
+        "lib": ["esnext"],// lib indica las bivliotecas y caracteristicas de js que se desea esten disponibles en el codigo de ts
+                          // "ESNext" se refiere a la version m as reciente de ESM
+        "target": "ES5", // se refiere a la version vamos a compilar ts
+        "moduleResolution": "NodeNext",
+        "module": "NodeNext", //es la forma como se van a compilar los modulos
+        "strict": false, //modo para ejecutar typescript 
+        "sourceMap": true, //nos da referencia al codigo original de ts donde esta el error
+        "esModuleInterop": true, //permite utilizar codigos de ESM y de Commonjs
+        "declaration": true,//habilitar la generacion de los archivos .ts
+
+    } ,
+    "include": ["src/**/*.ts", "src/index.ts"] //archivos que se quieren incluir
+}
