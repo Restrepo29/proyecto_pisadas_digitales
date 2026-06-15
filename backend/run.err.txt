@@ -1,0 +1,24 @@
+(node:31096) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("ts-node/esm", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:31096) [DEP0180] DeprecationWarning: fs.Stats constructor is deprecated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+node:internal/modules/esm/loader:346
+        throw new ERR_REQUIRE_CYCLE_MODULE(message);
+              ^
+
+Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\daveg\OneDrive\Escritorio\proyecto-vanesa\pisadasDigitales\proyecto_pisadas_digitales\backend\src\index.ts in a cycle.
+    at ModuleLoader.importSyncForRequire (node:internal/modules/esm/loader:346:15)
+    at loadESMFromCJS (node:internal/modules/cjs/loader:1385:24)
+    at Module._compile (node:internal/modules/cjs/loader:1536:5)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)
+    at cjsLoader (node:internal/modules/esm/translators:262:5)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:196:7) {
+  code: 'ERR_REQUIRE_CYCLE_MODULE'
+}
+
+Node.js v22.14.0

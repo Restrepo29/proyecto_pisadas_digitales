@@ -1,167 +1,111 @@
-import { Router } from "express";
-import { DB } from "./server";
-import { RowDataPacket } from "mysql2";
+import { Router } from 'express';
+import { db } from './db';
 
 const router = Router();
 
+router.get('/', (req, res) => {
+  const page = Math.max(parseInt(req.query.page as string) || 1, 1);
+  const limit = Math.max(parseInt(req.query.limit as string) || 3, 1);
+  const offset = (page - 1) * limit;
+  const sizes = (req.query.sizes as string | undefined)?.trim();
+  const minPrice = req.query.minPrice ? Number(req.query.minPrice) : undefined;
+  const maxPrice = req.query.maxPrice ? Number(req.query.maxPrice) : undefined;
+  const colors = (req.query.colors as string | undefined)?.trim();
+  const gender = (req.query.gender as string | undefined)?.trim();
 
+  const whereConditions: string[] = [];
+  const params: Array<string | number> = [];
 
-// Obtener productos PAGINADOS
-router.get('/', async (req, res) => {
- 
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 3;
-     const sizes = req.query.sizes as string;
-     const minPrice = req.query.minPrice ? parseInt(req.query.minPrice as string) : undefined;
-const maxPrice = req.query.maxPrice ? parseInt(req.query.maxPrice as string) : undefined;
-const colors = req.query.colors as string;
-    const offset = (page - 1) * limit;
-    const gender = req.query.gender as string;
+  if (sizes) {
+    const sizeArray = sizes.split(',').map((size) => size.trim()).filter(Boolean);
+    whereConditions.push(`size_prod IN (${sizeArray.map(() => '?').join(',')})`);
+    params.push(...sizeArray);
+  }
 
-    try {
-        let whereConditions: string[] = [];
-  
-    let filterParams: any[] = [];
-    
-    // Procesar filtros una sola vez
-    if (sizes && sizes.trim() !== '') {
-        const sizeArray = sizes.split(',').map(s => s.trim()).filter(s => s);
-      
-          whereConditions.push('size_prod IN (?)');
-        filterParams.push(sizeArray);
-    }
-
-    // Filtro por precio (nuevo)
-if (minPrice !== undefined && maxPrice !== undefined) {
+  if (minPrice !== undefined && maxPrice !== undefined) {
     whereConditions.push('precio_prod BETWEEN ? AND ?');
-    filterParams.push(minPrice, maxPrice);
-} else if (minPrice !== undefined) {
+    params.push(minPrice, maxPrice);
+  } else if (minPrice !== undefined) {
     whereConditions.push('precio_prod >= ?');
-    filterParams.push(minPrice);
-} else if (maxPrice !== undefined) {
+    params.push(minPrice);
+  } else if (maxPrice !== undefined) {
     whereConditions.push('precio_prod <= ?');
-    filterParams.push(maxPrice);
-}
- 
-// Filtro por color 
-if (colors && colors.trim() !== '') {
-    const colorArray = colors.split(',').map(c => c.trim()).filter(c => c);
-    whereConditions.push('color_prod IN (?)');
-    filterParams.push(colorArray);
-}
+    params.push(maxPrice);
+  }
 
-// Filtro por género/categoría
-if (gender && gender.trim() !== '') {
+  if (colors) {
+    const colorArray = colors.split(',').map((color) => color.trim()).filter(Boolean);
+    whereConditions.push(`color_prod IN (${colorArray.map(() => '?').join(',')})`);
+    params.push(...colorArray);
+  }
+
+  if (gender) {
     whereConditions.push('categoria_prod = ?');
-    filterParams.push(gender);
-}
+    params.push(gender);
+  }
 
-const whereClause = whereConditions.length > 0 ? ' WHERE ' + whereConditions.join(' AND ') : '';
-    
-    // Contar productos con filtros
-    const countQuery = 'SELECT COUNT(*) as total FROM productos' + whereClause;
-    const [countResult] = await DB.promise().query(countQuery, filterParams) as [RowDataPacket[], any];
-    const total = countResult[0].total;
-    
-    // Obtener productos con filtros
-    const productsQuery = 'SELECT * FROM productos' + whereClause + ' LIMIT ? OFFSET ?';
-    const [products] = await DB.promise().query(productsQuery, [...filterParams, limit, offset]
+  const whereClause = whereConditions.length ? ` WHERE ${whereConditions.join(' AND ')}` : '';
+  const totalRow = db.prepare(`SELECT COUNT(*) AS total FROM productos${whereClause}`).get(...params) as { total: number };
+  const productos = db.prepare(`SELECT * FROM productos${whereClause} LIMIT ? OFFSET ?`).all(...params, limit, offset);
 
-    ) as [RowDataPacket[], any];
-
-
-    
-    res.json({
-        productos: products,
-        pagination: {
-            total,
-            page,
-            limit,
-            totalPages: Math.ceil(total / limit)
-        }
-    });
-   
-    } catch (error) {
-        console.error('❌ Error:', error);
-        res.status(500).json({ error: 'Error al obtener productos' });
-    }
+  res.json({
+    productos,
+    pagination: {
+      total: totalRow.total,
+      page,
+      limit,
+      totalPages: Math.ceil(totalRow.total / limit),
+    },
+  });
 });
- 
 
+router.get('/search/:name', (req, res) => {
+  const { name } = req.params;
 
+  if (!name) {
+    return res.json({ productos: [], pagination: { totalPages: 0 } });
+  }
 
-// Busquedad de productos  por ID
+  const searchTerm = `%${name}%`;
+  const productos = db.prepare(
+    'SELECT * FROM productos WHERE mane_prod LIKE ? OR desc_prod LIKE ?'
+  ).all(searchTerm, searchTerm);
+
+  res.json({
+    productos,
+    pagination: {
+      totalPages: Math.ceil((productos as unknown[]).length / 3),
+    },
+  });
+});
 
 router.get('/:id', (req, res) => {
-    const { id } = req.params;
-    const SQL_QUERY = 'SELECT * FROM productos WHERE id_prod = ?';
-    
-    DB.query(SQL_QUERY, [id], (err, result: RowDataPacket[]) => {
-        if (err) {
-            console.error('❌ Error SQL:', err);
-            return res.status(500).json({ error: 'Error al obtener producto' });
-        }
-        
-        if (result.length === 0) {
-            return res.status(404).json({ error: 'Producto no encontrado' });
-        }
-        
-        res.json({ producto: result[0] });
-    });
+  const { id } = req.params;
+  const producto = db.prepare('SELECT * FROM productos WHERE id_prod = ?').get(id);
+
+  if (!producto) {
+    return res.status(404).json({ error: 'Producto no encontrado' });
+  }
+
+  res.json({ producto });
 });
 
-
-
-// Búsqueda de productos por nombre
-router.get('/search/:name', (req, res) => {
-    const { name } = req.params;
-    
-    if (!name) {
-        return res.json({ productos: [], pagination: { totalPages: 0 } });
-    }
- 
-    const searchQuery = 'SELECT * FROM productos WHERE mane_prod LIKE ? OR desc_prod LIKE ?';
-    const searchTerm = `%${name}%`;
-    
-    DB.query(searchQuery, [searchTerm, searchTerm], (err, result: RowDataPacket[]) => {
-        if (err) {
-            console.error('❌ Error en búsqueda:', err);
-            return res.status(500).json({ error: 'Error en búsqueda' });
-        }
-        
-        res.json({
-            productos: result,
-            pagination: {
-                totalPages: Math.ceil(result.length / 3)
-            }
-        });
-    });
-});
-
-// ruta para formulario
 router.post('/', (req, res) => {
-   
-    
-    const { name, asunto, email, telefono, mensaje, pais, tipo_cliente, categoria_interes } = req.body;
-    
-    const SQL_QUERY = `
-       INSERT INTO contactos 
-        (name, asunto, email, telefono, mensaje, pais, tipo_cliente, categoria_interes) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `;
-    
-    
-    
-    DB.query(SQL_QUERY, [name, asunto, email, telefono, mensaje, pais, tipo_cliente, categoria_interes], (err, result) => {
-        if (err) {
-            console.error('❌ Error SQL:', err);
-            return res.status(500).json({ error: 'Error al guardar el contacto' });
-        }
-        console.log('✅ Registro guardado, ID:', );
-        res.json({ message: 'Contacto guardado', });
-    });
+  const { name, asunto, email, telefono, mensaje, pais, tipo_cliente, categoria_interes } = req.body;
+
+  if (!name || !asunto || !email || !mensaje) {
+    return res.status(400).json({ error: 'Faltan campos obligatorios' });
+  }
+
+  const result = db.prepare(`
+    INSERT INTO contactos (name, asunto, email, telefono, mensaje, pais, tipo_cliente, categoria_interes)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(name, asunto, email, telefono ?? null, mensaje, pais ?? null, tipo_cliente ?? null, categoria_interes ?? null);
+
+  res.status(201).json({
+    message: 'Contacto guardado',
+    id: Number(result.lastInsertRowid),
+  });
 });
 
-
-        
 export default router;
