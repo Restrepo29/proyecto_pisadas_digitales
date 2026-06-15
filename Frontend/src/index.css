@@ -2259,6 +2259,137 @@ button:not(:disabled),
   border-color: #1f1a17;
 }
 
+/* Hero CTA polish + mobile cart fit fix */
+.hero-actions {
+  gap: 1.2rem;
+}
+
+.hero-btn {
+  --bs-btn-font-family: 'Raleway', sans-serif;
+  --bs-btn-font-size: 1.1rem;
+  --bs-btn-font-weight: 800;
+  --bs-btn-padding-y: 1.1rem;
+  --bs-btn-padding-x: 1.8rem;
+  min-width: 19rem;
+  border-radius: 999px;
+  letter-spacing: 0.03em;
+  border: 1px solid transparent;
+  backdrop-filter: blur(3px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .22);
+}
+
+.hero-btn-primary {
+  --bs-btn-color: #fff8f2;
+  --bs-btn-bg: linear-gradient(135deg, #ddb684 0%, #b27a4d 100%);
+  --bs-btn-hover-color: #fff8f2;
+  --bs-btn-hover-bg: linear-gradient(135deg, #e7c496 0%, #bf8659 100%);
+  --bs-btn-border-color: rgba(255, 255, 255, .2);
+}
+
+.hero-btn-secondary {
+  --bs-btn-color: #fff5e7;
+  --bs-btn-bg: rgba(255, 255, 255, .06);
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: rgba(255, 255, 255, .14);
+  --bs-btn-border-color: rgba(255, 232, 206, .45);
+}
+
+#carrito {
+  border: 1px solid rgba(31, 26, 23, .1);
+  border-radius: 1.4rem;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, .2);
+}
+
+#carrito .table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+#carrito .table thead,
+#carrito .table tbody {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .hero-actions {
+    width: 100%;
+  }
+
+  .hero-btn {
+    width: 100%;
+    min-width: 0;
+    justify-content: center;
+  }
+
+  .carrito #carrito.is-open {
+    position: fixed;
+    top: calc(8.8rem + env(safe-area-inset-top, 0px));
+    right: 1rem;
+    left: 1rem;
+    min-width: 0;
+    width: auto;
+    max-height: calc(100dvh - 10.2rem - env(safe-area-inset-top, 0px));
+    overflow: auto;
+    padding: 1.2rem;
+    z-index: 1200;
+  }
+
+  #carrito img {
+    width: 56px;
+  }
+
+  #carrito th,
+  #carrito td {
+    font-size: 1.35rem;
+    white-space: nowrap;
+  }
+
+  .cart-actions .btn {
+    --bs-btn-padding-y: 1rem;
+    --bs-btn-font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .carrito #carrito.is-open {
+    top: calc(9.8rem + env(safe-area-inset-top, 0px));
+    right: 0.8rem;
+    left: 0.8rem;
+    max-height: calc(100dvh - 11.2rem - env(safe-area-inset-top, 0px));
+    border-radius: 1.2rem;
+  }
+
+  #carrito .table {
+    font-size: 1.25rem;
+  }
+
+  #carrito th,
+  #carrito td {
+    padding: 0.45rem 0.35rem;
+  }
+
+  #carrito img {
+    width: 48px;
+    margin-top: 0;
+  }
+
+  .checkout-form {
+    padding: 0.85rem;
+  }
+
+  .checkout-field input,
+  .checkout-field textarea {
+    font-size: 1.45rem;
+  }
+
+  .cart-close-btn {
+    right: 8px;
+    top: 6px;
+  }
+}
+
 
 
 
