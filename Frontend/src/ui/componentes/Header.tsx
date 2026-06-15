@@ -1,5 +1,6 @@
 import { InputSearch } from "../../componentes/InputSearch";
 import { TableNave } from "../../componentes/TableNave";
+import calzadoGloria from "../../images/calzadoGloria.png";
 
 
 export const Header = () => {
@@ -7,9 +8,9 @@ export const Header = () => {
   return (
      <header>
         <div className="header-content">
-          <h1 className="name-site">
-            Tienda <span>Shoes</span>
-          </h1>
+          <a className="brand-mark" href="/" aria-label="Calzado Gloria">
+            <img src={calzadoGloria} alt="Calzado Gloria" />
+          </a>
           <InputSearch/>
           
               <TableNave/>

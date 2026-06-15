@@ -21,15 +21,6 @@ export const Navbar = () => {
             </NavLink>
             {/** clase de ruta activa */}
 
-            <NavLink
-              className={({ isActive }) => `nav-link nav-link 
-                        ${isActive ? "active" : ""}`}
-              to="/about"
-            >
-              Nosotros
-            </NavLink>
-           
-
              <NavLink
               className={({ isActive }) => `nav-link nav-link 
                         ${isActive ? "active" : ""}`}

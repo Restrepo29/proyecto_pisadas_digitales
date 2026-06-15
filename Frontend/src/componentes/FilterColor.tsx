@@ -28,34 +28,38 @@ export const FilterColor = () => {
   return (
     <>
       {/* Colors */}
-      <div className="filter-section">
-        <h4 className="filter-title"><b>Color</b></h4>
-        <div className="checkbox-group">
-          {colors.map((color) => (
-            <div key={color.id} className="checkbox-item">
-              <input
-                type="checkbox"
-                id={`color-${color.id}`}
-                value={color.id}
-                checked={currentColors.includes(color.id)}
-                onChange={() => handleColorChanged(color.id)}
-                className="checkbox-input"
-              />
-              <label
-                htmlFor={`color-${color.id}`}
-                className="checkbox-label"
-              >
-                <span
-                  className="color-dot"
-                  style={{ backgroundColor: color.code }}
-                ></span>
-                {color.label}
-              </label>
+      <details className="filter-accordion" open={currentColors.length > 0}>
+        <summary className="filter-accordion-summary">
+          <h4 className="filter-title">Color</h4>
+        </summary>
+        <div className="filter-accordion-content">
+          <div className="checkbox-group">
+            {colors.map((color) => (
+              <div key={color.id} className="checkbox-item">
+                <input
+                  type="checkbox"
+                  id={`color-${color.id}`}
+                  value={color.id}
+                  checked={currentColors.includes(color.id)}
+                  onChange={() => handleColorChanged(color.id)}
+                  className="checkbox-input"
+                />
+                <label
+                  htmlFor={`color-${color.id}`}
+                  className="checkbox-label"
+                >
+                  <span
+                    className="color-dot"
+                    style={{ backgroundColor: color.code }}
+                  ></span>
+                  {color.label}
+                </label>
 
-            </div>
-          ))}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </details>
       {/*hasta*/}
 
     </>

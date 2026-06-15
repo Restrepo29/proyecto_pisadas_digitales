@@ -31,16 +31,14 @@ export const StorePage = () => {
      <CustomTitle title={`Nuestra Colección ${categoriaLabel}`}/>
       
       <div className="store-layout">
-        {/* Contenido principal - Productos */}
+        <aside className="filter-sidebar-container">
+           <FilterSidebar /> 
+        </aside>
+
         <div className="products-container">
           <ProductsGrid />
           
           <Pagination totalPages={data?.pagination?.totalPages ?? 1} />
-        </div>
-        
-        {/* Sidebar de filtros - Lado derecho */}
-         <div className="filter-sidebar-container">
-           <FilterSidebar /> 
         </div>
       </div>
    </main>

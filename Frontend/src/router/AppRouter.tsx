@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import { MueblesLayout } from "../layout/MueblesLayout";
-import { IndexPage, AboutPage, StorePage, BlogPage,  ProductDetailPage, SearchPage } from "../pages";
+import { IndexPage, StorePage, BlogPage,  ProductDetailPage, SearchPage } from "../pages";
 
 export const appRouter=createBrowserRouter([
 
@@ -13,10 +13,6 @@ export const appRouter=createBrowserRouter([
                 element: <IndexPage/>
             },
 
-            {
-                path: "about",
-                element: <AboutPage/>
-            },
             {
                 path: "store/:gender",
                 element: <StorePage/>

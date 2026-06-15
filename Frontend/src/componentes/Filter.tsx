@@ -8,9 +8,12 @@ export const FilterSidebar = () => {
   const { gender } = useParams()
   return (
     <div className="filter-sidebar">
-      <div>
-
-        <h3 className="filter-header"><MdFilterListAlt /> Filtros  </h3>
+      <div className="filter-hero">
+        <span className="filter-icon"><MdFilterListAlt /></span>
+        <div>
+          <h3 className="filter-header">Filtros</h3>
+          <p className="filter-subtitle">Refina tu selección</p>
+        </div>
       </div>
 
       {gender === 'calzado' ? (

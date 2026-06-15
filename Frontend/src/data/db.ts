@@ -2,7 +2,6 @@
 export interface ProductoResponse {
   pagination: {
     total: number;
-    pages: number;
     totalPages: number;
   };
   productos: ProductProps[];
@@ -14,8 +13,10 @@ export interface ProductProps {
     imageUrl_prod: string;
     mane_prod: string;
     precio_prod: number;
-  desc_prod: string;
-  size_prod: string[];
+    desc_prod: string;
+    size_prod: string;
+    color_prod: string;
+    categoria_prod: string;
 }
 
 export type Size = 'xs' | 's' | 'm' | 'l' | 'xl';

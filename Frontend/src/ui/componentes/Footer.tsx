@@ -38,7 +38,7 @@ export const Footer = () => {
                 </nav>
             </div>
         </div>
-        <p className="copyright">Todos los derechos reservados - Tienda Shoes</p>
+        <p className="copyright">Todos los derechos reservados - Calzado Gloria</p>
 
     </footer>
 

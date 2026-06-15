@@ -30,20 +30,24 @@ export const FilterSize = () => {
 
   return (
     <>
-      <div className="filter-section">
-        <h4 className="filter-title"><strong>Tallas</strong></h4>
-        <div className="sizes-grid">
-          {sizes.map((size) => (
-            <button
-              key={size.id}
-              className={`size-button ${currentSizes.includes(size.id) ? 'active' : 'inactive'}`}
-              onClick={() => handleSizeChanged(size.id)}
-            >
-              {size.label}
-            </button>
-          ))}
+      <details className="filter-accordion" open>
+        <summary className="filter-accordion-summary">
+          <h4 className="filter-title">Tallas</h4>
+        </summary>
+        <div className="filter-accordion-content">
+          <div className="sizes-grid">
+            {sizes.map((size) => (
+              <button
+                key={size.id}
+                className={`size-button ${currentSizes.includes(size.id) ? 'active' : 'inactive'}`}
+                onClick={() => handleSizeChanged(size.id)}
+              >
+                {size.label}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      </details>
       <div className="separator"></div>
     </>
   )
